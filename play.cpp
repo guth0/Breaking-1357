@@ -3,9 +3,9 @@
 #include <set>
 #include <string>
 
-#include "solution.cpp"
-#include "state.cpp"
-#include "tree.cpp"
+#include "src/solution.cpp"
+#include "src/state.cpp"
+#include "src/tree.cpp"
 
 node<state *> *make_move(std::set<node<state *> *> solved,
                          std::map<std::string, node<state *> *> map,
@@ -89,14 +89,13 @@ int main(int argc, char *argv[]) {
   // make the first state
   state *start = new state;
 
-  // create the state tree
-  tree<state *> state_tree(start);
+  node<state *> * head = new node<state *>(start);
 
   // add the first node to the map
-  map[start->rows] = state_tree.head;
+  map[start->rows] = head;
 
   // generate all nodes and edges (recursively)
-  give_children(state_tree.head, map);
+  give_children(head, map);
 
   // create a set to store all the states that guarentee wins
   std::set<node<state *> *> solved;
@@ -109,11 +108,12 @@ int main(int argc, char *argv[]) {
   // get our next move, print that to the terminal
   // ask for the next state
 
-  node<state *> *curr_state = state_tree.head;
+  node<state *> *curr_state = head;
 
   if (bot_num == 1) {
     curr_state = make_move(solved, map, curr_state);
   }
+
 
   std::string temp = "0000X";
   temp[0] = temp[1] = temp[2] = temp[3] = 0;

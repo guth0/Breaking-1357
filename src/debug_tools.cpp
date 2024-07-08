@@ -8,15 +8,15 @@
 #include "state.cpp"
 #include "tree.cpp"
 
-// returns the number of missing states, should be 16
-[[nodiscard]]
-int check_missing(const std::map<std::string, node<state *> *> &map) {
+// returns the number of missing states, should be 16 (since there are 16 impossible states)
+[[nodiscard]] int
+check_missing(const std::map<std::string, node<state *> *> &map) {
   std::string tester;
   tester.resize(5);
 
   // I know this is gross but it is just for debugging to no need for max
   // efficiency/readablility
-  
+
   int counter = 0;
 
   for (int player = 1; player <= 2; ++player) {
@@ -31,7 +31,7 @@ int check_missing(const std::map<std::string, node<state *> *> &map) {
             tester[3] = row4;
             if (map.count(tester) == 0) {
               /*
-	      std::string inverse;
+              std::string inverse;
               inverse.resize(4);
 
               for (int i = 0; i < 5; ++i) {
@@ -47,9 +47,9 @@ int check_missing(const std::map<std::string, node<state *> *> &map) {
                 std::cout << (int)(inverse[i]);
               }
               std::cout << std::endl;
-	      */
+              */
 
-	      ++counter;
+              ++counter;
             }
           }
         }
@@ -60,18 +60,29 @@ int check_missing(const std::map<std::string, node<state *> *> &map) {
   return counter;
 }
 
-
 // returns the number of invalid nodes
-[[nodiscard]]
-int check_relatives(const std::map<std::string, node<state *> *> &map)
-{
+[[nodiscard]] int
+check_relatives(const std::map<std::string, node<state *> *> &map) {
   std::string start_string = "1357";
   std::transform(start_string.begin(), start_string.end(), start_string.begin(),
-                 [](char c) { return c - 48; }); 
+                 [](char c) { return c - 48; });
 
-  // generate an array of all the inpossible states
-  std::vector<std::string> inpossibles;
-  inpossibles.reserve(16);
+  // There are 16 impossible states.
+  // They are the ones that only have 1 distict number of moves to get to it.
+  // These are moves that have only 1 taken from any/all of the rows.
+  // These generate impossible moves because if a state (just the rows) requires
+  // exactly 3 moves to get to, then it cannot end with a "1" because player 1
+  // makes every odd move.
+  //
+  // Below, there is something called "inverse", this is a
+  // string that represents how many sticks have been taken from each row.
+  // "0012"'s inverse is "1345" Since the impossible states can only have 0 or 1
+  // taken from any row, the inverses of all of them also match up to the range
+  // [0, 15] represented in base 2: 0000, 0001, 0010, ... , 1111
+
+  // generate an array of all the impossible states
+  std::vector<std::string> impossibles;
+  impossibles.reserve(16);
 
   std::string str = "0000X"; // Initalize as length 5 string
 
@@ -86,7 +97,7 @@ int check_relatives(const std::map<std::string, node<state *> *> &map)
 
           str[4] = ((row1 + row2 + row3 + row4) % 2 == 0) ? 2 : 1;
 
-          inpossibles.push_back(str);
+          impossibles.push_back(str);
         }
       }
     }
@@ -99,14 +110,14 @@ int check_relatives(const std::map<std::string, node<state *> *> &map)
 
       int difference = 16 - node->relatives();
 
-      for (std::string inp : inpossibles)
-      {
-        if (node->data->next_to(inp)){
+      for (std::string inp : impossibles) {
+        if (node->data->next_to(inp)) {
           --difference;
         }
       }
 
-      if (difference != 0){
+      if (difference != 0) {
+        /*
         std::string str = node->data->to_str();
         std::string inverse = "0000"; // initialize as a length 4 string
 
@@ -114,11 +125,11 @@ int check_relatives(const std::map<std::string, node<state *> *> &map)
           inverse[i] = (48 + (2 * i + 1)) - node->data->rows[i];
         }
 
-        // A node is allowed to have less than 16 relatives if one of its expected
-        // parents is one of the 16 inpossible states are the ones with inverses
+        // A node is allowed to have less than 16 relatives if one of its
+        expected
+        // parents is one of the 16 impossible states are the ones with inverses
         // that contain only 1s or 0s
 
-	/*
         std::cout << str << " : " << node->relatives() << " :: " << inverse
           << " ::: " << node->parents.size() << " + "
           << node->children.size() << std::endl;
@@ -126,17 +137,15 @@ int check_relatives(const std::map<std::string, node<state *> *> &map)
 
         counter += 1;
       }
-
     }
   }
   return (counter);
 }
 
-[[nodiscard]]
-int check_crossover(std::set<node<state *> *> set1,std::set<node<state *> *> set2)
-{
+[[nodiscard]] int check_crossover(std::set<node<state *> *> set1,
+                                  std::set<node<state *> *> set2) {
   int counter = 0;
-  
+
   for (node<state *> *sn : set1) {
     if (set2.count(sn) != 0) {
       // printf("Crossover @ %p\n", sn);
@@ -145,5 +154,3 @@ int check_crossover(std::set<node<state *> *> set1,std::set<node<state *> *> set
   }
   return counter;
 }
-
-

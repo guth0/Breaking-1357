@@ -3,10 +3,10 @@
 #include <set>
 #include <string>
 
-#include "debug_tools.cpp"
-#include "solution.cpp"
-#include "state.cpp"
-#include "tree.cpp"
+#include "src/debug_tools.cpp"
+#include "src/solution.cpp"
+#include "src/state.cpp"
+#include "src/tree.cpp"
 
 int main(int argc, char *argv[]) {
 
@@ -18,16 +18,16 @@ int main(int argc, char *argv[]) {
   state *start = new state;
 
   // create the state tree
-  tree<state *> state_tree(start);
+  node<state *> * head = new node<state *>(start);
 
   // add the first node to the map
   std::string start_string = "13571";
   std::transform(start_string.begin(), start_string.end(), start_string.begin(),
                  [](char c) { return c - 48; });
-  map[start_string] = state_tree.head;
+  map[start_string] = head;
 
   // generate all nodes and edges (recursively)
-  give_children(state_tree.head, map);
+  give_children(head, map);
 
   // verify map and tree
   int num_missing = check_missing(map);
@@ -47,10 +47,10 @@ int main(int argc, char *argv[]) {
   solve(2, map, solved2);
 
   // if a set contains the starting position, then that player can ALWAYS win
-  if (solved1.count(state_tree.head) != 0) {
+  if (solved1.count(head) != 0) {
     std::cout << "P1 can always win!" << std::endl;
   }
-  if (solved2.count(state_tree.head) != 0) {
+  if (solved2.count(head) != 0) {
     std::cout << "P2 can always win!" << std::endl;
   }
 
