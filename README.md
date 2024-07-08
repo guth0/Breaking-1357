@@ -14,14 +14,14 @@ The 1357 game starts with 4 rows each with 1, 3, 5, and 7 sticks as shown below:
 The game has two players, player 1 and player 2.
 For a players move, they choose any of the 4 rows and can remove any amount of sticks from that row alone.
 
-Valid Move:
+✔ Valid Move:
 ```
    |             |
   |||    -->    |||
  |||||   -->    |||
 |||||||       |||||||
 ```
-Invalid Move:
+✖ Invalid Move:
 ```
    |             |
   |||    -->     |
@@ -89,4 +89,4 @@ Given the current state of the game, it checks if that state is in its solution 
 
 To use the bot, run `game [player number]` where `player number` is either 1 or 2. \
     If you choose 1, then you will make the first move (You will lose). \
-    If you choose 2, then the bot will make the first move (good luck). \
+    If you choose 2, then the bot will make the first move (good luck 😅).
