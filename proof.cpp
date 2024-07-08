@@ -12,13 +12,13 @@ int main(int argc, char *argv[]) {
 
   // map to store the nodes
   // makes it so there is only one copy of any given state
-  std::map<std::string, node<state *> *> map;
+  std::map<std::string, node<state> *> map;
 
   // make the first state
-  state *start = new state;
+  state start;
 
   // create the state tree
-  node<state *> * head = new node<state *>(start);
+  node<state> * head = new node<state>(start);
 
   // add the first node to the map
   std::string start_string = "13571";
@@ -39,8 +39,8 @@ int main(int argc, char *argv[]) {
   std::cout << num_invliad << " Invalid nodes" << std::endl;
 
   // create a set to store all the states that guarentee wins
-  std::set<node<state *> *> solved1;
-  std::set<node<state *> *> solved2;
+  std::set<node<state> *> solved1;
+  std::set<node<state> *> solved2;
 
   // fill the set
   solve(1, map, solved1);
@@ -56,7 +56,6 @@ int main(int argc, char *argv[]) {
 
   // delete all heap data
   for (auto [key, data] : map) {
-    delete data->data;
     delete data;
   }
 

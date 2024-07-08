@@ -7,9 +7,9 @@
 #include "src/state.cpp"
 #include "src/tree.cpp"
 
-node<state *> *make_move(std::set<node<state *> *> solved,
-                         std::map<std::string, node<state *> *> map,
-                         node<state *> *current_state) {
+node<state> *make_move(std::set<node<state> *> solved,
+                         std::map<std::string, node<state> *> map,
+                         node<state> *current_state) {
 
   if (current_state->children.size() == 0) {
     // if this hits, then someone has won
@@ -25,7 +25,7 @@ node<state *> *make_move(std::set<node<state *> *> solved,
   if (solved.find(current_state) != solved.end()) {
 
     // find a child of the current_state in the set and return it
-    for (node<state *> *child : current_state->children) {
+    for (node<state> *child : current_state->children) {
       if (solved.find(child) != solved.end()) {
         return child;
         // since we are in the solved set, it does not matter which
@@ -43,13 +43,13 @@ node<state *> *make_move(std::set<node<state *> *> solved,
 
     float best_chance = 0;
     int best_pos = 0;
-
+                                 
     // iterate over all the children to see which one has the highest percentage
     // of children in the solved set and return that one
     for (int i = 0; i < current_state->children.size(); ++i) {
-      node<state *> *child = current_state->children[i];
+      node<state> *child = current_state->children[i];
       float curr_chance = 0;
-      for (node<state *> *grandchild : child->children) {
+      for (node<state> *grandchild : child->children) {
         if (solved.find(grandchild) != solved.end()) {
           curr_chance += 1;
         }
@@ -84,21 +84,21 @@ int main(int argc, char *argv[]) {
 
   // map to store the nodes
   // makes it so there is only one copy of any given state
-  std::map<std::string, node<state *> *> map;
+  std::map<std::string, node<state> *> map;
 
   // make the first state
-  state *start = new state;
+  state start;
 
-  node<state *> * head = new node<state *>(start);
+  node<state> * head = new node<state>(start);
 
   // add the first node to the map
-  map[start->rows] = head;
+  map[start.rows] = head;
 
   // generate all nodes and edges (recursively)
   give_children(head, map);
 
   // create a set to store all the states that guarentee wins
-  std::set<node<state *> *> solved;
+  std::set<node<state> *> solved;
 
   // fill the set
   solve(bot_num, map, solved);
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
   // get our next move, print that to the terminal
   // ask for the next state
 
-  node<state *> *curr_state = head;
+  node<state> *curr_state = head;
 
   if (bot_num == 1) {
     curr_state = make_move(solved, map, curr_state);
@@ -119,16 +119,16 @@ int main(int argc, char *argv[]) {
   temp[0] = temp[1] = temp[2] = temp[3] = 0;
 
   temp[4] = 1;
-  node<state *> *p1_win = map[temp];
+  node<state> *p1_win = map[temp];
 
   temp[4] = 2;
-  node<state *> *p2_win = map[temp];
+  node<state> *p2_win = map[temp];
 
 
   while (curr_state != p1_win && curr_state != p2_win &&
          curr_state != nullptr) {
     std::cout << "Current state: "
-              << curr_state->data->to_str().substr(0, 4)
+              << curr_state->data.to_str().substr(0, 4)
               << std::endl
               << "Enter next state: ";
 
@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
 
     newstate += bot_num;
 
-    while (newstate.size() != 5 || !curr_state->data->next_to(newstate)) {
+    while (newstate.size() != 5 || !curr_state->data.next_to(newstate)) {
       std::cout << "Invalid Argument, try again." << std::endl;
       std::cout << "Enter next state: ";
       std::cin.clear();

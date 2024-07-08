@@ -4,11 +4,11 @@
 #include "state.cpp"
 #include "tree.cpp"
 
-void give_children(node<state *> *seed,
-                   std::map<std::string, node<state *> *> &map) {
+void give_children(node<state> *seed,
+                   std::map<std::string, node<state> *> &map) {
 
   // get the starting state as a string
-  std::string state_str = seed->data->rows;
+  std::string state_str = seed->data.rows;
 
   // change who's turn it is to the other player
   state_str.back() = (state_str.back() == 1) ? 2 : 1;
@@ -31,9 +31,9 @@ void give_children(node<state *> *seed,
       if (map.count(new_str) == 0) {
 
         // create new state
-        state *new_state = new state;
-        new_state->rows = new_str;
-        node<state *> *new_node = new node<state *>(new_state);
+        state new_state;
+        new_state.rows = new_str;
+        node<state> *new_node = new node<state>(new_state);
 
         // add state node to the map
         map[new_str] = new_node;
@@ -62,15 +62,15 @@ void give_children(node<state *> *seed,
   }
 }
 
-void start_solve(std::set<node<state *> *> &solved, node<state *> *start) {
+void start_solve(std::set<node<state> *> &solved, node<state> *start) {
 
   // check every parent for validity
-  for (node<state *> *parent : start->parents) {
+  for (node<state> *parent : start->parents) {
     bool valid = true;
     // if every child of the parent is in the set, it is valid
-    for (node<state *> *child : parent->children) {
+    for (node<state> *child : parent->children) {
       if (solved.find(child) == solved.end()) {
-        valid = false;
+        valid = false;                                    
         break;
       }
     }
@@ -79,12 +79,12 @@ void start_solve(std::set<node<state *> *> &solved, node<state *> *start) {
       solved.insert(parent);
 
       // add all grandparents to the set (since it is our turn)
-      for (node<state *> *grandparent : parent->parents) {
+      for (node<state> *grandparent : parent->parents) {
         solved.insert(grandparent);
       }
 
       // start solving on the grandparents
-      for (node<state *> *grandparent : parent->parents) {
+      for (node<state> *grandparent : parent->parents) {
         start_solve(solved, grandparent);
       }
       // two seperate loops so that "solved" is properly populated
@@ -93,8 +93,8 @@ void start_solve(std::set<node<state *> *> &solved, node<state *> *start) {
 }
 
 void solve(const char player_to_check,
-           std::map<std::string, node<state *> *> &map,
-           std::set<node<state *> *> &solved) {
+           std::map<std::string, node<state> *> &map,
+           std::set<node<state> *> &solved) {
 
   // get the pointer of the "player_to_check wins" state
   std::string p_win = "0000X";
@@ -122,7 +122,7 @@ void solve(const char player_to_check,
 
     // insert all the parents of these states since it is our turn
     // begin the recursive solution on them as well
-    for (node<state *> *n : map[winner]->parents) {
+    for (node<state> *n : map[winner]->parents) {
       solved.insert(n);
       start_solve(solved, n);
     }

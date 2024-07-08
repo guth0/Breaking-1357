@@ -10,7 +10,7 @@
 
 // returns the number of missing states, should be 16 (since there are 16 impossible states)
 [[nodiscard]] int
-check_missing(const std::map<std::string, node<state *> *> &map) {
+check_missing(const std::map<std::string, node<state> *> &map) {
   std::string tester;
   tester.resize(5);
 
@@ -62,7 +62,7 @@ check_missing(const std::map<std::string, node<state *> *> &map) {
 
 // returns the number of invalid nodes
 [[nodiscard]] int
-check_relatives(const std::map<std::string, node<state *> *> &map) {
+check_relatives(const std::map<std::string, node<state> *> &map) {
   std::string start_string = "1357";
   std::transform(start_string.begin(), start_string.end(), start_string.begin(),
                  [](char c) { return c - 48; });
@@ -111,7 +111,7 @@ check_relatives(const std::map<std::string, node<state *> *> &map) {
       int difference = 16 - node->relatives();
 
       for (std::string inp : impossibles) {
-        if (node->data->next_to(inp)) {
+        if (node->data.next_to(inp)) {
           --difference;
         }
       }
@@ -142,11 +142,11 @@ check_relatives(const std::map<std::string, node<state *> *> &map) {
   return (counter);
 }
 
-[[nodiscard]] int check_crossover(std::set<node<state *> *> set1,
-                                  std::set<node<state *> *> set2) {
+[[nodiscard]] int check_crossover(std::set<node<state> *> set1,
+                                  std::set<node<state> *> set2) {
   int counter = 0;
 
-  for (node<state *> *sn : set1) {
+  for (node<state> *sn : set1) {
     if (set2.count(sn) != 0) {
       // printf("Crossover @ %p\n", sn);
       counter += 1;
