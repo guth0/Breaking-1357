@@ -12,7 +12,8 @@ node<state *> *make_move(std::set<node<state *> *> solved,
                          node<state *> *current_state) {
 
   if (current_state->children.size() == 0) {
-    throw std::invalid_argument("Cannot make moves in a solved state");
+    // if this hits, then someone has won
+    return nullptr;
   }
 
   // if the current state is in our set, iterate over the children of the
@@ -79,6 +80,7 @@ int main(int argc, char *argv[]) {
   }
 
   char player_num = argv[1][0] - 48; // ascii trickery
+  char bot_num = (player_num == 1) ? 2 : 1;
 
   // map to store the nodes
   // makes it so there is only one copy of any given state
@@ -100,16 +102,16 @@ int main(int argc, char *argv[]) {
   std::set<node<state *> *> solved;
 
   // fill the set
-  solve(player_num, map, solved);
+  solve(bot_num, map, solved);
 
   // NOW START THE GAME
   // get the state of the game (if p1, then we know the first one)
   // get our next move, print that to the terminal
   // ask for the next state
 
-  node<state *> * curr_state = state_tree.head;
+  node<state *> *curr_state = state_tree.head;
 
-  if (player_num == 1) {
+  if (bot_num == 1) {
     curr_state = make_move(solved, map, curr_state);
   }
 
@@ -122,25 +124,40 @@ int main(int argc, char *argv[]) {
   temp[4] = 2;
   node<state *> *p2_win = map[temp];
 
-  while (curr_state != p1_win && curr_state != p2_win)
-  {
-    std::cout << "Current state: " << std::endl << curr_state->data->to_str().substr(0, 4) << std::endl;
-    std::cout << "Enter next state: ";
 
-    std::string newstate = "0000";
+  while (curr_state != p1_win && curr_state != p2_win &&
+         curr_state != nullptr) {
+    std::cout << "Current state: "
+              << curr_state->data->to_str().substr(0, 4)
+              << std::endl
+              << "Enter next state: ";
+
+    std::string newstate = "0000X";
     std::cin >> newstate;
 
-    while (newstate.size() != 4)
-    {
+    std::transform(newstate.begin(), newstate.end(), newstate.begin(),
+                   [](char c) { return c - 48; });
+
+    newstate += bot_num;
+
+    while (newstate.size() != 5 || !curr_state->data->next_to(newstate)) {
       std::cout << "Invalid Argument, try again." << std::endl;
       std::cout << "Enter next state: ";
       std::cin.clear();
       std::cin >> newstate;
+      std::transform(newstate.begin(), newstate.end(), newstate.begin(),
+                     [](char c) { return c - 48; });
+
+      newstate += bot_num;
     }
 
-    newstate += ((player_num == 1) ? "2" : "1");
     curr_state = make_move(solved, map, map[newstate]);
+  }
 
+  if (curr_state == nullptr) {
+    std::cout << "You have been defeated" << std::endl;
+  } else {
+    std::cout << "You have bested me" << std::endl;
   }
 
   return 0;
