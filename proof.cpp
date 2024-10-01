@@ -18,12 +18,12 @@ int main(int argc, char *argv[]) {
   state start;
 
   // create the state tree
-  node<state> * head = new node<state>(start);
+  node<state> *head = new node<state>(start);
 
   // add the first node to the map
   std::string start_string = "13571";
   std::transform(start_string.begin(), start_string.end(), start_string.begin(),
-                 [](char c) { return c - 48; });
+                 [](char c) { return c - '0'; });
   map[start_string] = head;
 
   // generate all nodes and edges (recursively)

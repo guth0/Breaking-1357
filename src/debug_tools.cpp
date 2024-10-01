@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <map>
 #include <set>
 #include <string>
@@ -65,7 +64,7 @@ check_missing(const std::map<std::string, node<state> *> &map) {
 check_relatives(const std::map<std::string, node<state> *> &map) {
   std::string start_string = "1357";
   std::transform(start_string.begin(), start_string.end(), start_string.begin(),
-                 [](char c) { return c - 48; });
+                 [](char c) { return c - '0'; });
 
   // There are 16 impossible states.
   // They are the ones that only have 1 distict number of moves to get to it.

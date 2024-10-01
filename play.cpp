@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
     std::cin >> newstate;
 
     std::transform(newstate.begin(), newstate.end(), newstate.begin(),
-                   [](char c) { return c - 48; });
+                   [](char c) { return c - '0'; });
 
     newstate += bot_num;
 
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
       std::cin.clear();
       std::cin >> newstate;
       std::transform(newstate.begin(), newstate.end(), newstate.begin(),
-                     [](char c) { return c - 48; });
+                     [](char c) { return c - '0'; });
 
       newstate += bot_num;
     }

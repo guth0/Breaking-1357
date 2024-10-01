@@ -16,7 +16,15 @@ void give_children(node<state> *seed,
   // Each node will have exactly 1 + 3 + 5 + 7 = 16 edges
   // And the number of children a node has is the sum of the sticks it holds
   // So the number of parents must be 16 - the sum of the sticks
-  unsigned char sum = state_str[0] + state_str[1] + state_str[2] + state_str[3];
+  unsigned int sum = state_str[0] + state_str[1] + state_str[2] + state_str[3];
+
+  // if a state has two of the same number (i.e. "1227"), then some of its
+  // children will not be the same a state with N rows of the same value, A,
+  // will have A states that appear N times. therefore, a state will have sum -
+  // [A * (N-1)] unique states ('sum' defined above). if a state has two sets of
+  // simmilar rows (i.e. "AABB"), then it will have sum - [A * (N-1)] - [B * (N
+  // - 1)] unqite states. Although, since N is always 2 then it can be expressed
+  // with sum - A - B
 
   // reserve space in the vectors for better performance
   seed->children.reserve(sum);
@@ -70,7 +78,7 @@ void start_solve(std::set<node<state> *> &solved, node<state> *start) {
     // if every child of the parent is in the set, it is valid
     for (node<state> *child : parent->children) {
       if (solved.find(child) == solved.end()) {
-        valid = false;                                    
+        valid = false;
         break;
       }
     }
@@ -99,7 +107,7 @@ void solve(const char player_to_check,
   // get the pointer of the "player_to_check wins" state
   std::string p_win = "0000X";
   std::transform(p_win.begin(), p_win.end(), p_win.begin(),
-                 [](char c) { return c - 48; });
+                 [](char c) { return c - '0'; });
 
   p_win[4] = player_to_check;
 
