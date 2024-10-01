@@ -49,11 +49,15 @@ In this other state, the player whose turn it is will be able to force the other
 
 ## Proof
 
-The proof is a program that checks every state the game can be in and backtracks to see if it is possible for either player 1 or player 2 to win every time with perfect play.
+The proof is a program that checks every state the game can be in and
+backtracks to see if it is possible for either player 1 or player 2 to win
+every time with perfect play.
 
 It starts by creating a tree and a map.
 
-It begins with the initial game state, represented by the string "13571" (the first 4 characters represent the number of sticks in each row, and the final character represents which players turn it is, 1 or 2)
+It begins with the initial game state, represented by the string "13571" (the
+first 4 characters represent the number of sticks in each row, and the final
+character represents which players turn it is, 1 or 2)
 
 A node is created with this game state inside, it also has two vectors of node pointers, parents and children.
 
@@ -78,14 +82,24 @@ If a solution set for either player contains the initial position ("13571"), the
 
 As it turns out, player 2 can always force a win in this game.
 Although, the size of the solution sets for either player are very similar in size.
-This means that a mistake from player 2 could result in the current state of the game to be in the solution set of player 1, meaning player 1 can guarantee a win with perfect play.
+this means that a mistake from player 2 could result in the current state of
+the game to be in the solution set of player 1, meaning player 1 can guarantee
+a win with perfect play.
 
 ## Bot
 
 Using the solution sets, I have created a bot that plays the game perfectly.
 Given the current state of the game, it checks if that state is in its solution set.
-    If it is, then it iterates over the current state's children until it finds one that is also in the solution set. Due to the way the set works, every state in the solution set (except for the winning state) will always have at least one child in the set as well.
-    If it is not, then it iterates over the current state's children and finds the one with the highest percentage of children that are in the solution set. This is so that the player (the person playing against the bot) has the highest chance of making a move that puts the current state into the bot's solution set. 
+    If it is, then it iterates over the current state's children until it finds
+    one that is also in the solution set. Due to the way the set works, every state
+    in the solution set (except for the winning state) will always have at least
+    one child in the set as well.
+    If it is not, then it iterates over the current state's children and finds
+    the one with the highest percentage of children that are in the solution set.
+    This is so that the player (the person playing against the bot) has the highest
+    chance of making a move that puts the current state into the bot's solution
+    set. 
+
 
 To use the bot, run `game [player number]` where `player number` is either 1 or 2. \
     If you choose 1, then you will make the first move (You will lose). \
